@@ -45,3 +45,9 @@ def signup(request):
 @login_required
 def dashboard(request):
     return render(request, 'dashboard.html')
+def purchase(request):
+    return render(request, 'purchase.html')
+def sales(request):
+    return render(request, 'sales.html')
+def report(request):
+    return render(request, 'reports.html')
