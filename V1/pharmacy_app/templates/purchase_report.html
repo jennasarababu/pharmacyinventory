@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Report - MediPharm</title>
+    <title>Purchase Report - MediPharm</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -178,29 +178,29 @@
             color: #dc3545;
         }
 
-        .sales-table {
+        .purchase-table {
             width: 100%;
             margin-top: 20px;
         }
 
-        .sales-table table {
+        .purchase-table table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .sales-table th, .sales-table td {
+        .purchase-table th, .purchase-table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .sales-table th {
+        .purchase-table th {
             background-color: var(--secondary-color);
             color: white;
             font-weight: 500;
         }
 
-        .sales-table tr:hover {
+        .purchase-table tr:hover {
             background-color: var(--light-bg);
         }
 
@@ -252,7 +252,7 @@
         }
 
         @media (max-width: 768px) {
-            .sales-table {
+            .purchase-table {
                 overflow-x: auto;
             }
         }
@@ -286,7 +286,7 @@
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="{% url 'purchase' %}" class="menu-item">
+                <a href="{% url 'purchase' %}" class="menu-item active">
                     <i class="fas fa-shopping-basket"></i>
                     <span>Purchase</span>
                 </a>
@@ -294,7 +294,7 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span>Sales</span>
                 </a>
-                <a href="{% url 'reports' %}" class="menu-item active">
+                <a href="{% url 'reports' %}" class="menu-item">
                     <i class="fas fa-chart-bar"></i>
                     <span>Sales Reports</span>
                 </a>
@@ -313,8 +313,8 @@
                 
                 <div class="menu-category">Sales</div>
                 <a href="#" class="menu-item">
-                    <i class="fas fa-cash-register"></i>
-                    <span>Point of Sale</span>
+                    <i class="fas fa-truck"></i>
+                    <span>Suppliers</span>
                 </a>
                 <a href="{% url 'purchase_report' %}"class="menu-item">
                     <i class="fas fa-chart-line"></i>
@@ -340,7 +340,7 @@
         
         <main class="main-content">
             <div class="top-bar">
-                <h1 class="page-title">Sales Report</h1>
+                <h1 class="page-title">Purchase Report</h1>
                 <button class="export-btn" onclick="handleExport()">
                     <i class="fas fa-download"></i>
                     Export Report
@@ -355,12 +355,12 @@
                     <input type="date" value="2025-02-19">
                 </div>
                 <div class="filter-group">
-                    <span class="filter-label">Category:</span>
+                    <span class="filter-label">Supplier:</span>
                     <select>
-                        <option value="all">All Categories</option>
-                        <option value="antibiotics">Antibiotics</option>
-                        <option value="painkillers">Painkillers</option>
-                        <option value="vitamins">Vitamins</option>
+                        <option value="all">All Suppliers</option>
+                        <option value="medsupply">MedSupply Co.</option>
+                        <option value="pharmtech">PharmTech Ltd.</option>
+                        <option value="biomed">BioMed Solutions</option>
                     </select>
                 </div>
             </div>
@@ -368,25 +368,25 @@
             <div class="report-grid">
                 <div class="report-card">
                     <div class="card-header">
-                        <h3 class="card-title">Total Sales</h3>
-                        <i class="fas fa-dollar-sign"></i>
+                        <h3 class="card-title">Total Purchase Amount</h3>
+                        <i class="fas fa-file-invoice-dollar"></i>
                     </div>
-                    <div class="metric">$24,350</div>
+                    <div class="metric">₹32,780</div>
                     <div class="metric-change">
                         <i class="fas fa-arrow-up"></i>
-                        12.4% vs last period
+                        8.6% vs last period
                     </div>
                 </div>
 
                 <div class="report-card">
                     <div class="card-header">
                         <h3 class="card-title">Total Orders</h3>
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-shopping-basket"></i>
                     </div>
-                    <div class="metric">543</div>
+                    <div class="metric">47</div>
                     <div class="metric-change">
                         <i class="fas fa-arrow-up"></i>
-                        8.2% vs last period
+                        5.2% vs last period
                     </div>
                 </div>
 
@@ -395,36 +395,37 @@
                         <h3 class="card-title">Average Order Value</h3>
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="metric">$44.84</div>
+                    <div class="metric">₹697.45</div>
                     <div class="metric-change">
                         <i class="fas fa-arrow-up"></i>
-                        3.8% vs last period
+                        3.2% vs last period
                     </div>
                 </div>
 
                 <div class="report-card">
                     <div class="card-header">
-                        <h3 class="card-title">Best Selling Item</h3>
+                        <h3 class="card-title">Top Supplier</h3>
                         <i class="fas fa-trophy"></i>
                     </div>
-                    <div class="metric" style="font-size: 1.5rem;">Paracetamol 500mg</div>
+                    <div class="metric" style="font-size: 1.5rem;">MedSupply Co.</div>
                     <div class="metric-change">
-                        428 units sold
+                        ₹12,460 worth purchases
                     </div>
                 </div>
             </div>
 
-            <div class="report-card sales-table">
+            <div class="report-card purchase-table">
                 <div class="card-header">
-                    <h3 class="card-title">Top Selling Products</h3>
+                    <h3 class="card-title">Top Purchased Products</h3>
                 </div>
                 <table>
                     <thead>
                         <tr>
                             <th>Product Name</th>
                             <th>Category</th>
-                            <th>Units Sold</th>
-                            <th>Revenue</th>
+                            <th>Units</th>
+                            <th>Total Cost (₹)</th>
+                            <th>Supplier</th>
                             <th>Growth</th>
                         </tr>
                     </thead>
@@ -432,44 +433,50 @@
                         <tr>
                             <td>Paracetamol 500mg</td>
                             <td>Painkillers</td>
-                            <td>428</td>
-                            <td>$4,280</td>
-                            <td class="metric-change">+15.2%</td>
+                            <td>2500</td>
+                            <td>6,250</td>
+                            <td>MedSupply Co.</td>
+                            <td class="metric-change">+12.5%</td>
                         </tr>
                         <tr>
                             <td>Amoxicillin 250mg</td>
                             <td>Antibiotics</td>
-                            <td>356</td>
-                            <td>$3,916</td>
-                            <td class="metric-change">+12.8%</td>
+                            <td>1800</td>
+                            <td>15,750</td>
+                            <td>PharmTech Ltd.</td>
+                            <td class="metric-change">+8.3%</td>
                         </tr>
                         <tr>
                             <td>Vitamin C 1000mg</td>
                             <td>Vitamins</td>
-                            <td>312</td>
-                            <td>$3,432</td>
-                            <td class="metric-change negative">-2.4%</td>
+                            <td>1200</td>
+                            <td>4,560</td>
+                            <td>NutriCare Inc.</td>
+                            <td class="metric-change negative">-3.1%</td>
                         </tr>
                         <tr>
-                            <td>Ibuprofen 400mg</td>
-                            <td>Painkillers</td>
-                            <td>289</td>
-                            <td>$2,890</td>
-                            <td class="metric-change">+8.6%</td>
+                            <td>Insulin Glargine</td>
+                            <td>Hormones</td>
+                            <td>200</td>
+                            <td>25,000</td>
+                            <td>BioMed Solutions</td>
+                            <td class="metric-change">+15.6%</td>
+                        </tr>
+                        <tr>
+                            <td>Omeprazole 20mg</td>
+                            <td>Antacids</td>
+                            <td>1500</td>
+                            <td>5,700</td>
+                            <td>MedSupply Co.</td>
+                            <td class="metric-change">+4.9%</td>
                         </tr>
                         <tr>
                             <td>Cetirizine 10mg</td>
                             <td>Antihistamines</td>
-                            <td>267</td>
-                            <td>$2,403</td>
-                            <td class="metric-change">+5.3%</td>
-                        </tr>
-                        <tr>
-                            <td>Amruthanjan 30mg</td>
-                            <td>Antihistamines</td>
-                            <td>267</td>
-                            <td>$20</td>
-                            <td class="metric-change">+5.3%</td>
+                            <td>1000</td>
+                            <td>3,800</td>
+                            <td>PharmTech Ltd.</td>
+                            <td class="metric-change">+7.2%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -488,7 +495,7 @@
             printWindow.document.write(`
                 <html>
                 <head>
-                    <title>MediPharm Sales Report</title>
+                    <title>MediPharm Purchase Report</title>
                     <style>
                         body {
                             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -560,7 +567,7 @@
                     </style>
                 </head>
                 <body>
-                    <h1 style="margin-bottom: 20px;">MediPharm Sales Report</h1>
+                    <h1 style="margin-bottom: 20px;">MediPharm Purchase Report</h1>
                     <div style="margin-bottom: 20px; color: #666;">
                         Report Period: Feb 01, 2025 - Feb 19, 2025
                     </div>

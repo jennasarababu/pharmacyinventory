@@ -53,3 +53,5 @@ def report(request):
     return render(request, 'reports.html')
 def inventory(request):
     return render(request, 'inventory.html')
+def purchase_report(request):
+    return render(request, 'purchase_report.html')
