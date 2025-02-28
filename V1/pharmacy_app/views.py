@@ -55,3 +55,7 @@ def inventory(request):
     return render(request, 'inventory.html')
 def purchase_report(request):
     return render(request, 'purchase_report.html')
+from django.shortcuts import render
+
+def billing_view(request):
+    return render(request, 'billing.html')
