@@ -502,7 +502,7 @@
             <div class="purchase-actions">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search medicines...">
+                    <input type="text" placeholder="Search medicines..." id="search-input">
                 </div>
                 
                 <div class="action-buttons">
@@ -513,8 +513,10 @@
                         </a>
                     </button>
                     <button class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        <span>New Purchase</span>
+                        <a href="{% url 'new_purchase' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            <span>New Purchase</span>
+                        </a>
                     </button>
                     <button class="btn btn-secondary">
                         <i class="fas fa-file-export"></i>
@@ -540,116 +542,97 @@
                             <th>Discount (%)</th>
                             <th>GST (%)</th>
                             <th>Amount (₹)</th>
-                            <th>Status</th>
+                            
                             <th>Supplier</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>3004.90.90</td>
-                            <td>Paracetamol 500mg</td>
-                            <td>PCM22B456</td>
-                            <td>Dec 15, 2025</td>
-                            <td class="numeric-cell">500</td>
-                            <td class="numeric-cell">2.50</td>
-                            <td class="numeric-cell">5.0</td>
-                            <td class="numeric-cell">12.0</td>
-                            <td class="numeric-cell">1,312.50</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>MedSupply Co.</td>
-                            <td class="actions">
-                                <i class="fas fa-edit action-icon edit-icon"></i>
-                                <i class="fas fa-trash action-icon delete-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3003.20.00</td>
-                            <td>Amoxicillin 250mg</td>
-                            <td>AMX23A789</td>
-                            <td>May 10, 2025</td>
-                            <td class="numeric-cell">200</td>
-                            <td class="numeric-cell">8.75</td>
-                            <td class="numeric-cell">10.0</td>
-                            <td class="numeric-cell">18.0</td>
-                            <td class="numeric-cell">1,854.50</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>PharmTech Ltd.</td>
-                            <td class="actions">
-                                <i class="fas fa-edit action-icon edit-icon"></i>
-                                <i class="fas fa-trash action-icon delete-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3004.39.10</td>
-                            <td>Insulin Glargine</td>
-                            <td>INS23C123</td>
-                            <td>Mar 03, 2025</td>
-                            <td class="numeric-cell">50</td>
-                            <td class="numeric-cell">125.00</td>
-                            <td class="numeric-cell">0.0</td>
-                            <td class="numeric-cell">5.0</td>
-                            <td class="numeric-cell">6,562.50</td>
-                            <td><span class="status-badge status-expiring">Expiring Soon</span></td>
-                            <td>BioMed Solutions</td>
-                            <td class="actions">
-                                <i class="fas fa-edit action-icon edit-icon"></i>
-                                <i class="fas fa-trash action-icon delete-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3004.50.90</td>
-                            <td>Vitamin D3 60,000 IU</td>
-                            <td>VTD23D234</td>
-                            <td>Sep 28, 2026</td>
-                            <td class="numeric-cell">300</td>
-                            <td class="numeric-cell">15.20</td>
-                            <td class="numeric-cell">8.0</td>
-                            <td class="numeric-cell">12.0</td>
-                            <td class="numeric-cell">4,825.60</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>NutriCare Inc.</td>
-                            <td class="actions">
-                                <i class="fas fa-edit action-icon edit-icon"></i>
-                                <i class="fas fa-trash action-icon delete-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3004.90.99</td>
-                            <td>Omeprazole 20mg</td>
-                            <td>OMP23E567</td>
-                            <td>Jul 12, 2025</td>
-                            <td class="numeric-cell">400</td>
-                            <td class="numeric-cell">3.80</td>
-                            <td class="numeric-cell">7.0</td>
-                            <td class="numeric-cell">12.0</td>
-                            <td class="numeric-cell">1,608.32</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>MedSupply Co.</td>
-                            <td class="actions">
-                                <i class="fas fa-edit action-icon edit-icon"></i>
-                                <i class="fas fa-trash action-icon delete-icon"></i>
-                            </td>
-                        </tr>
-                        <!-- Add more rows with similar structure -->
+                    <tbody id="purchase-table-body">
+                        <!-- Dynamic rows will be inserted here -->
                     </tbody>
                 </table>
                 
                 <div class="pagination">
-                    <div class="pagination-info">Showing 1 to 8 of 24 entries</div>
-                    <div class="pagination-buttons">
-                        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn">2</button>
-                        <button class="page-btn">3</button>
-                        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                    <div class="pagination-info" id="pagination-info"></div>
+                    <div class="pagination-buttons" id="pagination-buttons">
+                        <!-- Dynamic pagination buttons will be inserted here -->
                     </div>
                 </div>
             </div>
         </main>
     </div>
     <script>
-        
+        // const purchases = [
+        //     { hsn: '3004.90.90', name: 'Paracetamol 500mg', batch: 'PCM22B456', expiry: 'Dec 15, 2025', quantity: 500, rate: 2.50, discount: 5.0, gst: 12.0, amount: 1312.50, status: 'Active', supplier: 'MedSupply Co.' },
+        //     { hsn: '3003.20.00', name: 'Amoxicillin 250mg', batch: 'AMX23A789', expiry: 'May 10, 2025', quantity: 200, rate: 8.75, discount: 10.0, gst: 18.0, amount: 1854.50, status: 'Active', supplier: 'PharmTech Ltd.' },
+        //     { hsn: '3004.39.10', name: 'Insulin Glargine', batch: 'INS23C123', expiry: 'Mar 03, 2025', quantity: 50, rate: 125.00, discount: 0.0, gst: 5.0, amount: 6562.50, status: 'Expiring Soon', supplier: 'BioMed Solutions' },
+        //     { hsn: '3004.50.90', name: 'Vitamin D3 60,000 IU', batch: 'VTD23D234', expiry: 'Sep 28, 2026', quantity: 300, rate: 15.20, discount: 8.0, gst: 12.0, amount: 4825.60, status: 'Active', supplier: 'NutriCare Inc.' },
+        //     { hsn: '3004.90.99', name: 'Omeprazole 20mg', batch: 'OMP23E567', expiry: 'Jul 12, 2025', quantity: 400, rate: 3.80, discount: 7.0, gst: 12.0, amount: 1608.32, status: 'Active', supplier: 'MedSupply Co.' },
+        //     // Add more purchase objects as needed
+        // ];
+
+        // const rowsPerPage = 8;
+        // let currentPage = 1;
+
+        function renderTable() {
+            const tableBody = document.getElementById('purchase-table-body');
+            tableBody.innerHTML = '';
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const currentPurchases = purchases.slice(start, end);
+
+            currentPurchases.forEach(purchase => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${purchase.hsn}</td>
+                    <td>${purchase.name}</td>
+                    <td>${purchase.batch}</td>
+                    <td>${purchase.expiry}</td>
+                    <td class="numeric-cell">${purchase.quantity}</td>
+                    <td class="numeric-cell">${purchase.rate}</td>
+                    <td class="numeric-cell">${purchase.discount}</td>
+                    <td class="numeric-cell">${purchase.gst}</td>
+                    <td class="numeric-cell">${purchase.amount}</td>
+                    <td><span class="status-badge status-${purchase.status.toLowerCase().replace(' ', '-')}">${purchase.status}</span></td>
+                    <td>${purchase.supplier}</td>
+                    <td class="actions">
+                        <i class="fas fa-edit action-icon edit-icon"></i>
+                        <i class="fas fa-trash action-icon delete-icon"></i>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const paginationButtons = document.getElementById('pagination-buttons');
+            paginationButtons.innerHTML = '';
+
+            const totalPages = Math.ceil(purchases.length / rowsPerPage);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                button.textContent = i;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTable();
+                });
+                paginationButtons.appendChild(button);
+            };
+            document.getElementById('pagination-info').textContent = `Showing ${start + 1} to ${Math.min(end, purchases.length)} of ${purchases.length} entries`;
+        };
+
+        document.getElementById('search-input').addEventListener('input', (event) => {
+            const searchTerm = event.target.value.toLowerCase();
+            const filteredPurchases = purchases.filter(purchase => purchase.name.toLowerCase().includes(searchTerm));
+            renderTable(filteredPurchases);
+        });
+
+        renderTable();
     </script>
 </body>
 </html>
