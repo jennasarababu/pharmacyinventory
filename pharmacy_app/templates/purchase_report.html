@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Report - MediPharm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a9d8f;
+            --secondary-color: #264653;
+            --accent-color: #e9c46a;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --border-color: #e9ecef;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .sidebar-logo i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .menu-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 15px 20px 5px;
+            opacity: 0.7;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-color);
+        }
+        
+        .menu-item i {
+            width: 20px;
+            margin-right: 10px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .report-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .metric {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            color: #28a745;
+        }
+
+        .metric-change.negative {
+            color: #dc3545;
+        }
+
+        .purchase-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .purchase-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .purchase-table th, .purchase-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .purchase-table th {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .purchase-table tr:hover {
+            background-color: var(--light-bg);
+        }
+
+        .export-btn {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-btn:hover {
+            background-color: #248a7e;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-logo span, .menu-item span, .menu-category {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .purchase-table {
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 0;
+                z-index: 1000;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-mortar-pestle"></i>
+                    <span>MediPharm</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-category">Main</div>
+                <a href="{% url 'dashboard' %}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'purchase' %}" class="menu-item active">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>Purchase</span>
+                </a>
+                <a href="{% url 'sales' %}" class="menu-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Sales</span>
+                </a>
+                <a href="{% url 'reports' %}" class="menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Sales Reports</span>
+                </a>
+                <a href="{% url 'inventory' %}"class="menu-item">
+                    <i class="fas fa-pills"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-file-prescription"></i>
+                    <span>Prescriptions</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Patients</span>
+                </a>
+                
+                <div class="menu-category">Sales</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Suppliers</span>
+                </a>
+                <a href="{% url 'purchase_report' %}"class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Purchase Reports</span>
+                </a>
+                
+                <div class="menu-category">Administration</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-user-md"></i>
+                    <span>Staff</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                
+                <a href="{% url 'home' %}" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title">Purchase Report</h1>
+                <button class="export-btn" onclick="handleExport()">
+                    <i class="fas fa-download"></i>
+                    Export Report
+                </button>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <span class="filter-label">Date Range:</span>
+                    <input type="date" value="2025-02-01">
+                    <span class="filter-label">to</span>
+                    <input type="date" value="2025-02-19">
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Supplier:</span>
+                    <select>
+                        <option value="all">All Suppliers</option>
+                        <option value="medsupply">MedSupply Co.</option>
+                        <option value="pharmtech">PharmTech Ltd.</option>
+                        <option value="biomed">BioMed Solutions</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="report-grid">
+                <div class="report-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Purchase Amount</h3>
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="metric">₹32,780</div>
+                    <div class="metric-change">
+                        <i class="fas fa-arrow-up"></i>
+                        8.6% vs last period
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Orders</h3>
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <div class="metric">47</div>
+                    <div class="metric-change">
+                        <i class="fas fa-arrow-up"></i>
+                        5.2% vs last period
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Average Order Value</h3>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="metric">₹697.45</div>
+                    <div class="metric-change">
+                        <i class="fas fa-arrow-up"></i>
+                        3.2% vs last period
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Supplier</h3>
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="metric" style="font-size: 1.5rem;">MedSupply Co.</div>
+                    <div class="metric-change">
+                        ₹12,460 worth purchases
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-card purchase-table">
+                <div class="card-header">
+                    <h3 class="card-title">Top Purchased Products</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Units</th>
+                            <th>Total Cost (₹)</th>
+                            <th>Supplier</th>
+                            <th>Growth</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Paracetamol 500mg</td>
+                            <td>Painkillers</td>
+                            <td>2500</td>
+                            <td>6,250</td>
+                            <td>MedSupply Co.</td>
+                            <td class="metric-change">+12.5%</td>
+                        </tr>
+                        <tr>
+                            <td>Amoxicillin 250mg</td>
+                            <td>Antibiotics</td>
+                            <td>1800</td>
+                            <td>15,750</td>
+                            <td>PharmTech Ltd.</td>
+                            <td class="metric-change">+8.3%</td>
+                        </tr>
+                        <tr>
+                            <td>Vitamin C 1000mg</td>
+                            <td>Vitamins</td>
+                            <td>1200</td>
+                            <td>4,560</td>
+                            <td>NutriCare Inc.</td>
+                            <td class="metric-change negative">-3.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Insulin Glargine</td>
+                            <td>Hormones</td>
+                            <td>200</td>
+                            <td>25,000</td>
+                            <td>BioMed Solutions</td>
+                            <td class="metric-change">+15.6%</td>
+                        </tr>
+                        <tr>
+                            <td>Omeprazole 20mg</td>
+                            <td>Antacids</td>
+                            <td>1500</td>
+                            <td>5,700</td>
+                            <td>MedSupply Co.</td>
+                            <td class="metric-change">+4.9%</td>
+                        </tr>
+                        <tr>
+                            <td>Cetirizine 10mg</td>
+                            <td>Antihistamines</td>
+                            <td>1000</td>
+                            <td>3,800</td>
+                            <td>PharmTech Ltd.</td>
+                            <td class="metric-change">+7.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script>
+        function handleExport() {
+            // Get the main content
+            const content = document.querySelector('.main-content').innerHTML;
+            
+            // Create a new window
+            const printWindow = window.open('', '_blank');
+            
+            // Add the content with styles to the new window
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>MediPharm Purchase Report</title>
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            padding: 20px;
+                            color: #333;
+                        }
+                        
+                        .report-grid {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 20px;
+                            margin-bottom: 20px;
+                        }
+                        
+                        .report-card {
+                            background-color: white;
+                            border-radius: 8px;
+                            padding: 20px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+                        }
+                        
+                        .card-title {
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            color: #264653;
+                        }
+                        
+                        .metric {
+                            font-size: 2rem;
+                            font-weight: bold;
+                            color: #2a9d8f;
+                            margin: 10px 0;
+                        }
+                        
+                        .metric-change {
+                            font-size: 0.9rem;
+                            color: #28a745;
+                        }
+                        
+                        .metric-change.negative {
+                            color: #dc3545;
+                        }
+                        
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        
+                        th, td {
+                            padding: 12px;
+                            text-align: left;
+                            border-bottom: 1px solid #e9ecef;
+                        }
+                        
+                        th {
+                            background-color: #264653;
+                            color: white;
+                        }
+                        
+                        .top-bar, .filters, .export-btn, .sidebar {
+                            display: none;
+                        }
+        
+                        @media print {
+                            .report-grid {
+                                grid-template-columns: 1fr 1fr;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1 style="margin-bottom: 20px;">MediPharm Purchase Report</h1>
+                    <div style="margin-bottom: 20px; color: #666;">
+                        Report Period: Feb 01, 2025 - Feb 19, 2025
+                    </div>
+                    ${content}
+                </body>
+                </html>
+            `);
+            
+            // Trigger print dialog
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+</body>
+</html>

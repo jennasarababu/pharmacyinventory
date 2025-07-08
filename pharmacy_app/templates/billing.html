@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Billing System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary-color: #f59e0b;
+            --secondary-dark: #d97706;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --background-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --table-header: #f9fafb;
+            --table-row-even: #ffffff;
+            --table-row-odd: #f3f4f6;
+            --input-bg: #f9fafb;
+            --input-focus: #eff6ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .company-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: var(--input-focus);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: var(--table-header);
+            color: var(--text-color);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 14px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: var(--table-row-even);
+        }
+        
+        tbody tr:nth-child(odd) {
+            background-color: var(--table-row-odd);
+        }
+        
+        .item-remove {
+            color: var(--danger-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .item-remove:hover {
+            transform: scale(1.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #0ca678;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        .btn-ghost {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-ghost:hover {
+            background-color: var(--background-color);
+        }
+        
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .summary-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+        
+        .payment-info {
+            margin-top: 20px;
+        }
+        
+        .summary-details {
+            background-color: var(--background-color);
+            border-radius: 6px;
+            padding: 15px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 16px;
+            padding-top: 15px;
+            margin-top: 5px;
+        }
+        
+        .product-search {
+            position: relative;
+        }
+        
+        .product-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 6px 6px;
+            z-index: 10;
+            display: none;
+        }
+        
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        
+        .suggestion-item:hover {
+            background-color: var(--background-color);
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .container, .container * {
+                visibility: visible;
+            }
+            .container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-container {
+                grid-template-columns: 1fr;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+            
+            .responsive-table {
+                overflow-x: auto;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        /* Theme switch toggle */
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+        }
+        
+        /* Notification popup */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Status badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-paid {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-pending {
+            background-color: #fff7ed;
+            color: #9a3412;
+        }
+        
+        .status-draft {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        .status-partial {
+            background-color: #eff6ff;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">Invoice saved successfully!</div>
+    
+    <div class="container">
+        <header>
+            <div class="theme-switch" id="theme-switch">
+                <i class="fas fa-moon"></i>
+            </div>
+            <div class="company-info">
+                <div class="logo">MediTrack</div>
+                <div id="bill-status-badge" class="status-badge status-draft">DRAFT</div>
+                
+            </div>
+            <div style="position: relative; width: 100%;">
+                <a href="{% url 'purchase' %}" style="
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background-color: #2a9d8f;
+                    color: white;
+                    padding: 12px 18px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    transition: background 0.3s ease;
+                " onmouseover="this.style.backgroundColor='#21867a'" onmouseout="this.style.backgroundColor='#2a9d8f'">
+                    ← Back
+                </a>
+            </div>
+            <h1>Purchase Invoice</h1>
+        </header>
+        
+        <div class="main-content">
+            <form id="invoice-form">
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">Supplier Information</div>
+                        <a href="{% url 'purchase_history' %}" class="menu-item">Purchase History</a>
+                        <!-- <button type="button" class="btn btn-ghost no-print" id="fetch-supplier">
+                            <i class="fas fa-address-book"></i> Purchase history
+                            
+                        </button> -->
+                    </div>
+                    
+                    <label>Supplier:</label> <input type="text" id="Supplier" required><br>
+                    <label>InvoiceNo</label> <input type="text" id="InvoiceNo" required><br>
+                    <label>InvoiceDate:</label> <input type="date" id="InvoiceDate" required><br>
+                    <label>SupplierGST:</label> <input type="text" id="SupplierGST" required><br>
+                    <label>Address:</label> <input type="text" id="Address" required><br>
+                    <label>ContactPerson:</label> <input type="text" id="ContactPerson" required><br>
+
+                    <label>ContactNumber:</label> <input type="number" id="ContactNumber" required><br>
+                    
+                
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">Items</div>
+                        <div>
+                            <button type="button" class="btn btn-ghost no-print" id="scan-barcode">
+                                <i class="fas fa-barcode"></i> Scan Barcode
+                            </button>
+                            <button type="button" class="btn btn-secondary no-print" id="add-item">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <label>HSN:</label> <input type="text" id="hsn" required><br>
+                    <label>Name:</label> <input type="text" id="name" required><br>
+                    <label>Batch:</label> <input type="text" id="batch" required><br>
+                    <label>Expiry Date:</label> <input type="date" id="expiry" required><br>
+                    <label>Quantity:</label> <input type="number" id="quantity" required><br>
+                    <label>Rate:</label> <input type="number" id="rate" step="0.01" required><br>
+                    <label>Discount (%):</label> <input type="number" id="discount" step="0.01"><br>
+                    <label>GST (%):</label> <input type="number" id="gst" step="0.01" required><br>
+                    <label>Amount:</label> <input type="number" id="amount" step="0.01" required><br>
+                    <label>Supplier:</label> <input type="text" id="supplier" required><br>
+                    <button type="button" onclick="savePurchase(),supplierinfo()">Save Purchase</button>
+                </div>
+                
+                <div class="summary-container">
+                    <div class="section payment-info">
+                        
+                        
+                        
+                        
+                        
+                    
+                    <!-- <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Summary</div>
+                        </div>
+                        
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <div>Subtotal:</div>
+                                <div id="subtotal">₹0.00</div>
+                                <input type="hidden" id="subtotal_input" name="subtotal" value="0.00">
+                            </div>
+                            <div class="summary-row">
+                                <div>Tax:</div>
+                                <div id="tax-total">₹0.00</div>
+                                <input type="hidden" id="tax_total_input" name="tax_total" value="0.00">
+                            </div>
+                            <div class="summary-row">
+                                <div>Discount:</div>
+                                <div class="form-group" style="width: 100px;">
+                                    <input type="number" id="additional_discount" name="additional_discount" min="0" value="0" oninput="calculateFinalTotal()">
+                                </div>
+                            </div>
+                            <div class="summary-row">
+                                <div>Shipping:</div>
+                                <div class="form-group" style="width: 100px;">
+                                    <input type="number" id="shipping" name="shipping" min="0" step="0.01" value="0.00" oninput="calculateFinalTotal()">
+                                </div>
+                            </div>
+                            <div class="summary-row">
+                                <div>Grand Total:</div>
+                                <div id="grand-total">₹0.00</div>
+                                <input type="hidden" id="grand_total_input" name="grand_total" value="0.00">
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                
+                <input type="hidden" id="bill_status" name="bill_status" value="draft">
+                
+                <div class="buttons-group no-print">
+                    <button type="button" class="btn btn-ghost" id="preview-btn">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button type="button" class="btn btn-ghost" id="export-btn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                    <button type="button" class="btn btn-danger" id="clear-btn">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                    <button type="submit" class="btn btn-success" id="save-btn">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+            // Get the input fields
+            const quantityInput = document.getElementById('quantity');
+            const rateInput = document.getElementById('rate');
+            const discountInput = document.getElementById('discount');
+            const gstInput = document.getElementById('gst');
+    
+            // Add event listeners to trigger calculation when any value changes
+            quantityInput.addEventListener('input', calculateAmount);
+            rateInput.addEventListener('input', calculateAmount);
+            discountInput.addEventListener('input', calculateAmount);
+            gstInput.addEventListener('input', calculateAmount);
+    
+            // Initial calculation
+            calculateAmount();
+        });
+    
+        function calculateAmount() {
+            let quantity = parseFloat(document.getElementById('quantity').value) || 0;
+            let rate = parseFloat(document.getElementById('rate').value) || 0;
+            let discount = parseFloat(document.getElementById('discount').value) || 0;
+            let gst = parseFloat(document.getElementById('gst').value) || 0;
+    
+            let total = quantity * rate;
+            let discountAmount = (total * discount) / 100;
+            let gstAmount = ((total - discountAmount) * gst) / 100;
+            let finalAmount = total - discountAmount + gstAmount;
+    
+            document.getElementById('amount').value = finalAmount.toFixed(2);
+        }
+    
+        function savePurchase() {
+            let purchaseData = {
+                hsn: document.getElementById("hsn").value,
+                name: document.getElementById("name").value,
+                batch: document.getElementById("batch").value,
+                expiry: document.getElementById("expiry").value,
+                quantity: document.getElementById("quantity").value,
+                rate: document.getElementById("rate").value,
+                discount: document.getElementById("discount").value || 0,
+                gst: document.getElementById("gst").value,
+                amount: document.getElementById("amount").value,
+                supplier: document.getElementById("supplier").value
+            };
+    
+            fetch('/add_purchase/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(purchaseData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Purchase saved successfully!");
+                window.location.href = "/purchase/";
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+
+
+        function supplierinfo() {
+    let purchaseData = {
+        Supplier: document.getElementById("Supplier").value,
+        InvoiceNo: document.getElementById("InvoiceNo").value,
+        InvoiceDate: document.getElementById("InvoiceDate").value,
+        SupplierGST: document.getElementById("SupplierGST").value,
+        Address: document.getElementById("Address").value,
+        ContactPerson: document.getElementById("ContactPerson").value,
+        ContactNumber: document.getElementById("ContactNumber").value,
+
+        hsn: document.getElementById("hsn").value,
+        name: document.getElementById("name").value,
+        batch: document.getElementById("batch").value,
+        expiry: document.getElementById("expiry").value,
+        quantity: document.getElementById("quantity").value,
+        rate: document.getElementById("rate").value,
+        discount: document.getElementById("discount").value || 0,
+        gst: document.getElementById("gst").value,
+        amount: document.getElementById("amount").value
+    };
+
+    fetch('/add_supplier/', {  // Make sure this URL matches your Django route
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()  // Include CSRF token
+        },
+        body: JSON.stringify(purchaseData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+            window.location.href = "/purchase/";  // Redirect after success
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// CSRF Token Helper Function
+function getCSRFToken() {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Set today's date as default
+        document.getElementById('invoice_date').valueAsDate = new Date();
+        
+        // Generate a unique invoice number
+        document.getElementById('invoice_number').value = 'INV-' + Date.now().toString().slice(-6);
+        
+        // Add new item row
+        document.getElementById('add-item').addEventListener('click', function() {
+            addNewItemRow();
+        });
+        
+        function addNewItemRow() {
+            const table = document.getElementById('item-table');
+            const rowCount = table.rows.length;
+            const newRow = table.insertRow();
+            
+            newRow.id = 'item-row-' + (rowCount + 1);
+            newRow.className = 'item-row fade-in';
+            
+            // Update field names with the correct index
+            newRow.innerHTML = `
+                <td>
+                    <div class="product-search">
+                        <input type="text" class="item_name" name="items[${rowCount}][item_name]" placeholder="Search item..." oninput="suggestProducts(this)">
+                        <div class="product-suggestions"></div>
+                    </div>
+                </td>
+                <td><input type="text" class="batch" name="items[${rowCount}][batch]" placeholder="Batch"></td>
+                <td><input type="date" class="expiry" name="items[${rowCount}][expiry]"></td>
+                <td><input type="number" class="quantity" name="items[${rowCount}][quantity]" min="1" value="1" oninput="calculateItemTotal(this)"></td>
+                <td><input type="number" class="rate" name="items[${rowCount}][rate]" min="0" step="0.01" value="0.00" oninput="calculateItemTotal(this)"></td>
+                <td><input type="number" class="discount_percentage" name="items[${rowCount}][discount_percentage]" min="0" max="100" value="0" oninput="calculateItemTotal(this)"></td>
+                <td><input type="number" class="tax_percentage" name="items[${rowCount}][tax_percentage]" min="0" max="100" value="0" oninput="calculateItemTotal(this)"></td>
+                <td><input type="number" class="amount" name="items[${rowCount}][amount]" readonly value="0.00"></td>
+                <td class="no-print"><i class="fas fa-trash item-remove" onclick="removeItem(this)"></i></td>
+            `;
+        }
+        
+        // Remove item row
+        function removeItem(element) {
+            const row = element.closest('tr');
+            
+            // Don't remove if it's the only row
+            if (document.getElementById('item-table').rows.length > 1) {
+                row.remove();
+                calculateFinalTotal();
+                // Update indices for remaining rows
+                updateItemIndices();
+            }
+        }
+        
+        // Update indices for all item rows after removal
+        function updateItemIndices() {
+            const rows = document.querySelectorAll('.item-row');
+            rows.forEach((row, index) => {
+                // Update all input field names with new index
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const newName = name.replace(/items\[\d+\]/, `items[${index}]`);
+                        input.setAttribute('name', newName);
+                    }
+                });
+            });
+        }
+        
+        // Calculate item total
+        function calculateItemTotal(element) {
+            const row = element.closest('tr');
+            const qty = parseFloat(row.querySelector('.quantity').value) || 0;
+            const rate = parseFloat(row.querySelector('.rate').value) || 0;
+            const discount = parseFloat(row.querySelector('.discount_percentage').value) || 0;
+            const tax = parseFloat(row.querySelector('.tax_percentage').value) || 0;
+            
+            // Calculate amount as per the model's save method logic
+            const subTotal = qty * rate;
+            const discountAmount = (subTotal * discount) / 100;
+            const afterDiscount = subTotal - discountAmount;
+            const taxAmount = (afterDiscount * tax) / 100;
+            const total = afterDiscount + taxAmount;
+            
+            row.querySelector('.amount').value = total.toFixed(2);
+            
+            calculateFinalTotal();
+        }
+        
+        // Calculate final totals
+        function calculateFinalTotal() {
+            let subtotal = 0;
+            let totalTax = 0;
+            
+            // Calculate from all items
+            document.querySelectorAll('#item-table tr').forEach(row => {
+                const qty = parseFloat(row.querySelector('.quantity').value) || 0;
+                const rate = parseFloat(row.querySelector('.rate').value) || 0;
+                const discount = parseFloat(row.querySelector('.discount_percentage').value) || 0;
+                const tax = parseFloat(row.querySelector('.tax_percentage').value) || 0;
+                
+                const subTotal = qty * rate;
+                const discountAmount = (subTotal * discount) / 100;
+                const afterDiscount = subTotal - discountAmount;
+                const taxAmount = (afterDiscount * tax) / 100;
+                
+                subtotal += afterDiscount;
+                totalTax += taxAmount;
+            });
+            
+            // Get additional discount and shipping
+            const additionalDiscount = parseFloat(document.getElementById('additional_discount').value) || 0;
+            const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+            
+            // Calculate grand total
+            const grandTotal = subtotal + totalTax - additionalDiscount + shipping;
+            
+            // Update displays
+            document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('tax-total').textContent = '₹' + totalTax.toFixed(2);
+            document.getElementById('grand-total').textContent = '₹' + grandTotal.toFixed(2);
+            
+            // Update hidden fields
+            document.getElementById('subtotal_input').value = subtotal.toFixed(2);
+            document.getElementById('tax_total_input').value = totalTax.toFixed(2);
+            document.getElementById('grand_total_input').value = grandTotal.toFixed(2);
+        }
+        
+        // Mock product database for suggestions
+        const products = [
+            { name: 'Paracetamol 500mg', rate: 10.50, tax: 5 },
+            { name: 'Amoxicillin 250mg', rate: 15.75, tax: 5 },
+            { name: 'Cough Syrup 100ml', rate: 85.00, tax: 12 },
+            { name: 'Vitamin C 500mg', rate: 120.00, tax: 5 },
+            { name: 'Ibuprofen 400mg', rate: 12.50, tax: 5 },
+            { name: 'Bandage Roll', rate: 35.00, tax: 18 },
+            { name: 'Thermometer Digital', rate: 250.00, tax: 18 },
+            { name: 'Hand Sanitizer 500ml', rate: 150.00, tax: 18 }
+        ];
+        
+        // Product suggestions
+        function suggestProducts(input) {
+            const searchTerm = input.value.toLowerCase();
+            const suggestionBox = input.parentElement.querySelector('.product-suggestions');
+            
+            // Clear previous suggestions
+            suggestionBox.innerHTML = '';
+            
+            if (searchTerm.length < 2) {
+                suggestionBox.style.display = 'none';
+                return;
+            }
+            
+            // Filter products based on search term
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredProducts.length === 0) {
+                suggestionBox.style.display = 'none';
+                return;
+            }
+            
+            // Add matching products to suggestion box
+            filteredProducts.forEach(product => {
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.textContent = product.name;
+                
+                item.addEventListener('click', function() {
+                    const row = input.closest('tr');
+                    row.querySelector('.item_name').value = product.name;
+                    row.querySelector('.rate').value = product.rate.toFixed(2);
+                    row.querySelector('.tax_percentage').value = product.tax;
+                    
+                    calculateItemTotal(input);
+                    suggestionBox.style.display = 'none';
+                });
+                
+                suggestionBox.appendChild(item);
+            });
+            
+            suggestionBox.style.display = 'block';
+        }
+        
+        // Close suggestion box when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('item_name')) {
+                const suggestionBoxes = document.querySelectorAll('.product-suggestions');
+                suggestionBoxes.forEach(box => {
+                    box.style.display = 'none';
+                });
+            }
+        });
+        
+        // Update bill status based on payment status
+        function updateBillStatus() {
+            const paymentStatus = document.getElementById('payment_status').value;
+            const billStatusElement = document.getElementById('bill_status');
+            const billStatusBadge = document.getElementById('bill-status-badge');
+            
+            if (paymentStatus === 'paid') {
+                billStatusElement.value = 'paid';
+                billStatusBadge.className = 'status-badge status-paid';
+                billStatusBadge.textContent = 'PAID';
+            } else {
+                billStatusElement.value = 'draft';
+                billStatusBadge.className = 'status-badge status-draft';
+                billStatusBadge.textContent = 'DRAFT';
+            }
+        }
+        
+        // Mock supplier data for fetching suppliers
+        const suppliers = [
+            {
+                id: 1,
+                name: 'MedSupply Inc.',
+                gst_number: 'GSTIN29AADCB2230M1ZB',
+                address: '123 Pharma Street, Medical District, Bangalore',
+                contact_person: 'John Doe',
+                contact_number: '+91 9876543210'
+            },
+            {
+                id: 2,
+                name: 'PharmaWholesale Ltd.',
+                gst_number: 'GSTIN27AABCP9621L1ZP',
+                address: '456 Health Avenue, Mumbai',
+                contact_person: 'Jane Smith',
+                contact_number: '+91 8765432109'
+            },
+            {
+                id: 3,
+                name: 'MediEquip Suppliers',
+                gst_number: 'GSTIN06AABCM8123C1ZF',
+                address: '789 Hospital Road, New Delhi',
+                contact_person: 'Raj Kumar',
+                contact_number: '+91 7654321098'
+            }
+        ];
+        
+        // Fetch supplier details
+        document.getElementById('fetch-supplier').addEventListener('click', function() {
+            // In a real app, this would be a modal or dropdown
+            // For demonstration, we'll just use a prompt
+            const supplierName = prompt('Enter supplier name to search:', '');
+            
+            if (supplierName) {
+                const supplier = suppliers.find(s => 
+                    s.name.toLowerCase().includes(supplierName.toLowerCase())
+                );
+                
+                if (supplier) {
+                    document.getElementById('supplier_id').value = supplier.id;
+                    document.getElementById('supplier_name').value = supplier.name;
+                    document.getElementById('supplier_gst').value = supplier.gst_number;
+                    document.getElementById('supplier_address').value = supplier.address;
+                    document.getElementById('contact_person').value = supplier.contact_person;
+                    document.getElementById('contact_number').value = supplier.contact_number;
+                } else {
+                    alert('Supplier not found. Please try another name or add a new supplier.');
+                }
+            }
+        });
+        
+        // Toggle between light/dark theme
+        document.getElementById('theme-switch').addEventListener('click', function() {
+            document.body.classList.toggle('dark-theme');
+            this.innerHTML = document.body.classList.contains('dark-theme') ? 
+                '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+        
+        // Barcode scanning simulation
+        document.getElementById('scan-barcode').addEventListener('click', function() {
+            // In a real app, this would interface with a barcode scanner
+            // For demonstration, we'll just use a prompt
+            const barcode = prompt('Enter product barcode:', '');
+            
+            if (barcode) {
+                // Simulate finding a product by barcode
+                const randomProduct = products[Math.floor(Math.random() * products.length)];
+                
+                // Add a new row if needed
+                if (document.querySelector('#item-table tr:last-child .item_name').value) {
+                    addNewItemRow();
+                }
+                
+                // Fill in the last row with the "scanned" product
+                const lastRow = document.querySelector('#item-table tr:last-child');
+                lastRow.querySelector('.item_name').value = randomProduct.name;
+                lastRow.querySelector('.rate').value = randomProduct.rate.toFixed(2);
+                lastRow.querySelector('.tax_percentage').value = randomProduct.tax;
+                
+                calculateItemTotal(lastRow.querySelector('.item_name'));
+            }
+        });
+        
+        // Preview invoice (print view)
+        document.getElementById('preview-btn').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Export invoice (would be implemented with backend)
+        document.getElementById('export-btn').addEventListener('click', function() {
+            alert('In a complete implementation, this would export to PDF/Excel');
+        });
+        
+        // Clear form
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to clear the form? All data will be lost.')) {
+                document.getElementById('invoice-form').reset();
+                
+                // Reset date and invoice number
+                document.getElementById('invoice_date').valueAsDate = new Date();
+                document.getElementById('invoice_number').value = 'INV-' + Date.now().toString().slice(-6);
+                
+                // Clear item table except for first row
+                const itemTable = document.getElementById('item-table');
+                while (itemTable.rows.length > 1) {
+                    itemTable.deleteRow(itemTable.rows.length - 1);
+                }
+                
+                // Reset first row values
+                const firstRow = document.querySelector('#item-table tr');
+                firstRow.querySelector('.item_name').value = '';
+                firstRow.querySelector('.batch').value = '';
+                firstRow.querySelector('.expiry').value = '';
+                firstRow.querySelector('.quantity').value = '1';
+                firstRow.querySelector('.rate').value = '0.00';
+                firstRow.querySelector('.discount_percentage').value = '0';
+                firstRow.querySelector('.tax_percentage').value = '0';
+                firstRow.querySelector('.amount').value = '0.00';
+                
+                // Reset totals
+                calculateFinalTotal();
+                
+                // Reset bill status
+                document.getElementById('bill_status').value = 'draft';
+                document.getElementById('bill-status-badge').className = 'status-badge status-draft';
+                document.getElementById('bill-status-badge').textContent = 'DRAFT';
+            }
+        });
+        
+        // Save invoice
+
+        function getCSRFToken() {
+            return document.cookie.split('; ')
+                .find(row => row.startsWith('csrftoken='))
+                ?.split('=')[1];
+        }
+        document.getElementById('invoice-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted');
+            
+            // Basic validation
+            const supplierName = document.getElementById('supplier_name').value;
+            const invoiceNumber = document.getElementById('invoice_number').value;
+            const invoiceDate = document.getElementById('invoice_date').value;
+            
+            if (!supplierName || !invoiceNumber || !invoiceDate) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Check if at least one item is added with name and rate
+            let hasValidItems = false;
+            document.querySelectorAll('#item-table tr').forEach(row => {
+                const itemName = row.querySelector('.item_name').value;
+                const rate = parseFloat(row.querySelector('.rate').value);
+                
+                if (itemName && rate > 0) {
+                    hasValidItems = true;
+                }
+            });
+            
+            if (!hasValidItems) {
+                alert('Please add at least one item with a rate greater than zero.');
+                return;
+            }
+            
+            // In a real app, this would submit to the server
+            // For demo purposes, show notification
+            const notification = document.getElementById('notification');
+            notification.className = 'notification show';
+            
+            setTimeout(function() {
+                notification.className = 'notification';
+            }, 3000);
+            
+            // Update bill status badge
+            updateBillStatus();
+            
+
+
+
+
+            //http api call satrt
+            const payload = {
+                supplierName: supplierName,
+                invoiceNumber: invoiceNumber
+            };
+            fetch('/invoice/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken() // Include CSRF token
+
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Form submitted successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        
+
+            //http api call end
+        });
+        
+        // Initialize calculations
+        calculateFinalTotal();
+    </script>
+</body>
+</html>

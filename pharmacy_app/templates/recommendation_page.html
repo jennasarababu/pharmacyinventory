@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #alternative-results {
+            margin-top: 20px;
+        }
+
+        .medicine-item {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔍 Medicine Recommendation</h2>
+    <input type="text" id="medicine-input" placeholder="Enter medicine name">
+    <button id="search-btn">Search</button>
+    <div id="alternative-results"></div>
+</div>
+
+<script>
+document.getElementById("search-btn").addEventListener("click", function () {
+    let medicineName = document.getElementById("medicine-input").value.trim();
+
+    if (medicineName === "") {
+        alert("Please enter a medicine name.");
+        return;
+    }
+
+    // Reset previous results
+    document.getElementById("alternative-results").innerHTML = "🔍 Searching...";
+
+    fetch(`/recommend/?medicine_name=${medicineName}`)
+        .then(response => response.json())
+        .then(data => {
+            let resultContainer = document.getElementById("alternative-results");
+            resultContainer.innerHTML = "";  // Clear previous results
+            
+            if (data.results.length === 0) {
+                resultContainer.innerHTML = "⚠️ No alternatives found.";
+                return;
+            }
+
+            data.results.forEach(med => {
+                let div = document.createElement("div");
+                div.textContent = med.name;
+                div.classList.add("medicine-item");
+                resultContainer.appendChild(div);
+            });
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("alternative-results").innerHTML = "⚠️ Error fetching data.";
+        });
+});
+</script>
+
+</body>
+</html>

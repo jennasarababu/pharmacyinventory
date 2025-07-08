@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - MediPharm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #2a9d8f;
+            color: white;
+        }
+        .total {
+            text-align: right;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #264653;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            padding: 8px 16px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background-color: var(--secondary-color);
+            color: rgb(12, 183, 245);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Billing</h2>
+        <div style="position: relative; width: 100%;">
+            <a href="{% url 'sales' %}" style="
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: #2a9d8f;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 1rem;
+                font-weight: bold;
+                transition: background 0.3s ease;
+            " onmouseover="this.style.backgroundColor='#21867a'" onmouseout="this.style.backgroundColor='#2a9d8f'">
+                ← Back
+            </a>
+        </div>
+        
+        <button class="btn" onclick="addRow()">Add Item</button>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="bill-items">
+            </tbody>
+        </table>
+        <div class="total">
+            Grand Total: <span id="grand-total">$0.00</span>
+        </div>
+        <button class="btn" onclick="finalizeBill()">Finalize Bill</button>
+    </div>
+    <script>
+        function updateTotals() {
+            let total = 0;
+            document.querySelectorAll('#bill-items tr').forEach(row => {
+                let qty = row.querySelector('.qty').value;
+                let price = row.querySelector('.qty').getAttribute('data-price');
+                let rowTotal = qty * price;
+                row.querySelector('.total-price').innerText = `$${rowTotal.toFixed(2)}`;
+                total += rowTotal;
+            });
+            document.getElementById('grand-total').innerText = `$${total.toFixed(2)}`;
+        }
+        
+        
+        function addRow() {
+            let table = document.getElementById('bill-items');
+            let row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <input type="text" placeholder="Enter Item Name" class="item-name" oninput="searchItem(this)">
+                    <div class="suggestions" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
+                </td>
+                <td><input type="number" value="1" min="1" class="qty" data-price="0" oninput="updateTotals()"></td>
+                <td><input type="number" value="0" min="0" class="price" oninput="updatePrice(this)"></td>
+                <td class="total-price">$0.00</td>
+                <td><button onclick="removeRow(this)">Remove</button></td>
+                <input type="hidden" class="inventory-id" value=""> <!-- Hidden inventory_id -->
+            `;
+            table.appendChild(row);
+        }
+
+        function removeRow(button) {
+            button.parentElement.parentElement.remove();
+            updateTotals();
+        }
+
+        function updatePrice(input) {
+            let row = input.parentElement.parentElement;
+            let price = input.value;
+            let qty = row.querySelector('.qty').value;
+            row.querySelector('.qty').setAttribute('data-price', price);
+            updateTotals();
+        }
+
+        function searchItem(input) {
+            const query = input.value;
+            const suggestionsBox = input.nextElementSibling;
+
+            if (query.length < 2) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            fetch('/search-inventory/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const results = data.results;
+                suggestionsBox.innerHTML = '';
+                if (results.length > 0) {
+                    results.forEach(item => {
+                        const div = document.createElement('div');
+                        div.textContent = `${item.name} | Batch: ${item.batch} | Stock: ${item.stock}`;
+                        div.style.cursor = 'pointer';
+                        div.onclick = () => selectItem(input, item.inventory_id, item.name, item.mrp);
+                        suggestionsBox.appendChild(div);
+                    });
+                    suggestionsBox.style.display = 'block';
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+        }
+
+        function selectItem(input, inventoryId, name, price) {
+            const row = input.parentElement.parentElement;
+            input.value = name;
+            row.querySelector('.price').value = price;
+            row.querySelector('.qty').setAttribute('data-price', price);
+            row.querySelector('.inventory-id').value = inventoryId; // Set hidden inventory_id
+            input.nextElementSibling.style.display = 'none';
+            updateTotals();
+        }
+               
+        function showSummary(items) {
+            let summaryHtml = '<h3>Bill Summary</h3><table><tr><th>Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>';
+            let grandTotal = 0;
+
+            items.forEach(item => {
+                grandTotal += item.total;
+
+                summaryHtml += `<tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>₹${item.price.toFixed(2)}</td>
+                    <td>₹${item.total.toFixed(2)}</td>
+                </tr>`;
+            });
+
+            summaryHtml += `</table><h4>Grand Total: ₹${grandTotal.toFixed(2)}</h4>`;
+            summaryHtml += '<button class="btn" onclick="downloadBill()">Download Bill</button>';
+            summaryHtml += '<button class="btn" onclick="closeSummary()">Close</button>';
+
+            const summaryDiv = document.createElement('div');
+            summaryDiv.innerHTML = summaryHtml;
+            summaryDiv.style.position = 'fixed';
+            summaryDiv.style.top = '50%';
+            summaryDiv.style.left = '50%';
+            summaryDiv.style.transform = 'translate(-50%, -50%)';
+            summaryDiv.style.background = 'white';
+            summaryDiv.style.padding = '20px';
+            summaryDiv.style.border = '1px solid #ddd';
+            summaryDiv.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+            summaryDiv.id = 'summary-screen';
+            document.body.appendChild(summaryDiv);
+        }
+
+        function closeSummary() {
+            const summaryDiv = document.getElementById('summary-screen');
+            if (summaryDiv) {
+                summaryDiv.remove();
+            }
+        }
+
+        function downloadBill() {
+            fetch('/download-bill/', {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'bill_summary.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('Bill downloaded successfully!');
+                closeSummary();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function showPreview(items) {
+            let previewHtml = '<h3>Bill Preview</h3><table><tr><th>Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>';
+            let grandTotal = 0;
+
+            items.forEach(item => {
+                const row = document.querySelector(`#bill-items tr[data-id="${item.id}"]`);
+                const name = row.querySelector('.item-name').value;
+                const quantity = item.quantity;
+                const price = parseFloat(row.querySelector('.price').value);
+                const total = quantity * price;
+                grandTotal += total;
+
+                previewHtml += `<tr><td>${name}</td><td>${quantity}</td><td>${price.toFixed(2)}</td><td>${total.toFixed(2)}</td></tr>`;
+            });
+
+            previewHtml += `</table><h4>Grand Total: $${grandTotal.toFixed(2)}</h4>`;
+            previewHtml += '<button onclick="generateBill()">Generate Bill</button>';
+
+            const previewDiv = document.createElement('div');
+            previewDiv.innerHTML = previewHtml;
+            previewDiv.style.position = 'fixed';
+            previewDiv.style.top = '50%';
+            previewDiv.style.left = '50%';
+            previewDiv.style.transform = 'translate(-50%, -50%)';
+            previewDiv.style.background = 'white';
+            previewDiv.style.padding = '20px';
+            previewDiv.style.border = '1px solid #ddd';
+            previewDiv.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+            document.body.appendChild(previewDiv);
+        }
+
+        function generateBill() {
+            alert('Bill generated successfully!');
+            location.reload();
+        }
+    </script>
+</body>
+</html>
